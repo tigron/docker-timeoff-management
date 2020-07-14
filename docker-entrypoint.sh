@@ -30,12 +30,11 @@ else
 	fi
 fi
 
-if [[ -e /app/timeoff-management/config/crypto_secret ]]; then
-	CRYPTO_SECRET=$(cat /app/timeoff-management/config/crypto_secret)
-else
-	echo -n $(tr -dc A-Za-z0-9_\#\(\)\!: < /dev/urandom | head -c 40 | xargs) > /app/timeoff-management/config/crypto_secret
-	CRYPTO_SECRET=$(cat /app/timeoff-management/config/crypto_secret)
+if [[ ! -e /app/config/crypto_secret ]]; then
+	echo -n $(tr -dc A-Za-z0-9_\#\(\)\!: < /dev/urandom | head -c 40 | xargs) > /app/config/crypto_secret
 fi
+
+CRYPTO_SECRET=$(cat /app/config/crypto_secret)
 
 if [[ -z $APP_URL ]]; then
 	APP_URL=http://webapp.timeoff.management
@@ -52,7 +51,7 @@ if [[ -n $MYSQL_HOST && -n $MYSQL_USER && -n $MYSQL_PASSWORD ]]; then
 	if [[ -z $MYSQL_DATABASE ]]; then
 		MYSQL_DATABASE="timeoffmanagement"
 	fi
-	cat > /app/timeoff-management/config/db.json << EOF
+	cat > /app/config/db.json << EOF
   {
     "production": {
       "username": "$MYSQL_USER",
@@ -64,17 +63,17 @@ if [[ -n $MYSQL_HOST && -n $MYSQL_USER && -n $MYSQL_PASSWORD ]]; then
   }
 EOF
 else
-   cat > /app/timeoff-management/config/db.json << EOF
+   cat > /app/config/db.json << EOF
    {
      "production": {
         "dialect": "sqlite",
-		"storage": "./db.production.sqlite"
+		"storage": "/app/data/db.production.sqlite"
      }
   }
 EOF
 fi
 
-cat > /app/timeoff-management/config/app.json << EOF
+cat > /app/config/app.json << EOF
 {
   "allow_create_new_accounts" : $ALLOW_ACCOUNTS_CREATION,
   "send_emails"              : $SEND_MAILS,
@@ -92,8 +91,13 @@ cat > /app/timeoff-management/config/app.json << EOF
   "promotion_website_domain" : "$PROMOTION_URL"
 }
 EOF
+
+ln -sf /app/config/app.json /app/timeoff-management/config/app.json
+ln -sf /app/config/db.json /app/timeoff-management/config/db.json
+ln -sf /app/config/crypto_secret /app/timeoff-management/config/crypto_secret
+
 echo "========= PRINTING CONFIGURATION ========="
-cat /app/timeoff-management/config/app.json
+cat /app/config/app.json
 
 npm run-script db-update
 npm start

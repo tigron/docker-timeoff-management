@@ -21,6 +21,12 @@ RUN apk add --update nodejs npm
 
 WORKDIR /app/timeoff-management
 
+RUN mkdir /app/data
+VOLUME /app/data
+
+RUN mkdir /app/config
+VOLUME /app/config
+
 # Copy files from first stage
 COPY --from=base /app/timeoff-management/ /app/timeoff-management
 
