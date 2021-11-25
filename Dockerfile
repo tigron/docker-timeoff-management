@@ -6,7 +6,7 @@ RUN apk add --no-cache git make python3 sqlite
 
 # Create and change to workdir
 WORKDIR /app
-RUN git clone --branch 1.3.4 https://github.com/timeoff-management/application.git timeoff-management
+RUN git clone --branch 1.4.0 https://github.com/timeoff-management/application.git timeoff-management
 
 WORKDIR /app/timeoff-management
 
@@ -20,19 +20,22 @@ COPY scripts/20190118-chnage-type-value-for-api-token.js /app/timeoff-management
 # This is our runtime container
 FROM alpine:3.13
 
-# Install npm
-RUN apk add --update nodejs npm
+# Install npm and dependencies
+RUN apk add --update make nodejs npm python3 sqlite build-base
+RUN ln -s /usr/bin/python3 /usr/bin/python
+
+# Copy files from first stage
+COPY --from=base /app/timeoff-management/ /app/timeoff-management
 
 WORKDIR /app/timeoff-management
+
+RUN npm install mysql && npm install sqlite3 && npm install --unsafe-perm --production
 
 RUN mkdir /app/data
 VOLUME /app/data
 
 RUN mkdir /app/config
 VOLUME /app/config
-
-# Copy files from first stage
-COPY --from=base /app/timeoff-management/ /app/timeoff-management
 
 ADD docker-entrypoint.sh /docker-entrypoint.sh
 
