@@ -2,7 +2,7 @@
 FROM node:13-alpine AS base
 
 # Install dependencies
-RUN apk add --no-cache git
+RUN apk add --no-cache git make python3 sqlite
 
 # Create and change to workdir
 WORKDIR /app
@@ -11,7 +11,7 @@ RUN git clone --branch 1.3.4 https://github.com/timeoff-management/application.g
 WORKDIR /app/timeoff-management
 
 # Install dependencies
-RUN npm install mysql && npm install --unsafe-perm --production
+RUN npm install mysql && npm install sqlite3 && npm install --unsafe-perm --production
 
 # 20190118-chnage-type-value-for-api-token.js isn't compatible with mariadb. A better solution is used to replace it
 # Issue comment: https://github.com/timeoff-management/timeoff-management-application/issues/329#issuecomment-488327844
