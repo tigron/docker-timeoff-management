@@ -1,40 +1,59 @@
-# docker-timeoff-management
+# tigron/timeoff-management
 
-Docker implementation of the timeoff-management project
+Docker implementation of the timeoff-management project. Originally made by
+[NOS Inovação](https://github.com/nosinovacao/docker-timeoff-management)
 
-## Using Dockerfile
+## Using the image
 
-By default timeoff-management use sqlite and no smtp server configured.
+By default timeoff-management uses SQLite for both data and sessions and no SMTP
+server.
 
-To change default configurations use **environment variables**.
+To change the default configurations use the environment variables listed
+below.
 
-| Var Name | Possible values|
+| Variable | Possible values|
 | -------- | ------ |
-| **NODE_ENV** | development(default), test, production |
-| **SENDER_MAIL** | email address |
-| **SMTP_HOST** | host |
-| **SMTP_PORT** | port |
-| **SMTP_USER** | username/address |
-| **SMTP_PASSWORD** | password |
-| **APP_URL** | <http://app.timeoff.management> (default) |
-| **PROMOTION_URL** | <http://timeoff.management> |
-| **ALLOW_ACCOUNTS_CREATION** | true , false |
+| ALLOW_ACCOUNTS_CREATION | true (default), false |
+| MYSQL_HOST | host |
+| MYSQL_USER | port |
+| MYSQL_PASSWORD | password |
+| PROMOTION_URL | <http://timeoff.management> |
+| NODE_ENV | development (default), test, production |
+| SENDER_MAIL | email address |
+| SESSION_USE_REDIS | true, false (default) |
+| SESSION_REDIS_HOST | host
+| SESSION_REDIS_PORT | port |
+| APP_URL | <http://app.timeoff.management> (default) |
+| SMTP_HOST | host |
+| SMTP_PORT | port |
+| SMTP_USER | username |
+| SMTP_PASSWORD | password |
 
 ## Tags
 
-Tags are written using the following pattern: `timeoff-management:<year>.<month>.<revision>`
+Docker images are tagged using the TimeOff.Management version number, followed
+by a revision if there is one. There are also tags for the most recent image as
+well as for the development image.
 
-* timeoff-management:18.09.0
-* timeoff-management:18.07.0
-* timeoff-management:18.03.1
-* timeoff-management:18.03.0
+* timeoff-management:latest
+* timeoff-management:development
+* timeoff-management:release-1.0.0
+* timeoff-management:release-1.4.0
 
-More info on docker hub: <https://hub.docker.com/r/nosinovacao/timeoff-management/>
+More info on [Docker hub](https://hub.docker.com/r/tigron/timeoff-management).
 
-### Build and run docker image
+### Building and running the Docker image
 
-_Build_:
-> $ docker build -t timeoff .
+#### Building
 
-_Run_:
-> $ docker run -e NODE_ENV=production -e MYSQL_USER=timeoff timeoff
+Building the image can be done using the command below.
+
+    $ docker build -t tigron/timeoff-management:latest .
+
+This will result in an image being built with tag `latest`.
+
+#### Running
+
+Running the image in a local Docker instance can be done as follows.
+
+    $ docker run -e NODE_ENV=production tigron/timeoff-management:latest
