@@ -47,6 +47,12 @@ if [[ -z $ALLOW_ACCOUNTS_CREATION ]]; then
 	ALLOW_ACCOUNTS_CREATION=true
 fi
 
+if [[ -z $SESSION_USE_REDIS ]]; then
+	SESSION_USE_REDIS=false
+	SESSION_REDIS_HOST="localhost"
+	SESSION_REDIS_PORT="6379"
+fi
+
 if [[ -n $MYSQL_HOST && -n $MYSQL_USER && -n $MYSQL_PASSWORD ]]; then
 	if [[ -z $MYSQL_DATABASE ]]; then
 		MYSQL_DATABASE="timeoffmanagement"
@@ -86,6 +92,14 @@ cat > /app/config/app.json << EOF
       "pass" : "$SMTP_PASSWORD"
     }
   },
+  "sessionStore": {
+    "useRedis": $SESSION_USE_REDIS,
+    "redisConnectionConfiguration": {
+      "host": "$SESSION_REDIS_HOST",
+      "port": $SESSION_REDIS_PORT
+    }
+  },
+  "ga_analytics_on" : false,
   "crypto_secret" : "$CRYPTO_SECRET",
   "application_domain" : "$APP_URL",
   "promotion_website_domain" : "$PROMOTION_URL"
