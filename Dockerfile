@@ -6,7 +6,7 @@ RUN apk add --no-cache git make python3 sqlite
 
 # Create and change to workdir
 WORKDIR /app
-RUN git clone --branch 1.4.0 https://github.com/timeoff-management/application.git timeoff-management
+RUN git clone --branch 1.4.1 https://github.com/timeoff-management/application.git timeoff-management
 
 WORKDIR /app/timeoff-management
 
