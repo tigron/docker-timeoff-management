@@ -1,0 +1,24 @@
+--- lib/route/feed.js
++++ lib/route/feed.js
+@@ -129,11 +129,20 @@ router.get('/:token/ical.ics', function(req, res){
+ 
+         const comments = await getCommentsForLeave({leave: day.leave_obj});
+ 
++        // Build string with leave type to append to the ical event
++        // thanks to attilabalazsy
++        // https://github.com/timeoff-management/timeoff-management-application/issues/502#issuecomment-1195153836
++        var event_leave_type = day.leaveLabel.toLowerCase();
++        const indx = event_leave_type.indexOf('(');
++        if(indx > -1){
++          event_leave_type = event_leave_type.substr(0, indx - 1);
++        }
++
+         cal.createEvent({
+           start   : start.toDate(),
+           end     : end.toDate(),
+           allDay  : allDay,
+-          summary : day.user.full_name() + ' is OOO (out of office)',
++          summary : day.user.full_name() + ' (' + event_leave_type + ')',
+           description: (comments.length > 0
+             ? `With comments: ${comments.map(({comment}) => comment).join('. ')}`
+             : ''

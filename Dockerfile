@@ -8,7 +8,13 @@ RUN apk add --no-cache git make python3 sqlite
 WORKDIR /app
 RUN git clone --branch 1.4.1 https://github.com/timeoff-management/application.git timeoff-management
 
+# Apply patches
+COPY patches .
+RUN ls -la
 WORKDIR /app/timeoff-management
+RUN patch -p0 < ../20220810-ical-leave-type.patch
+RUN rm ../*.patch
+
 
 # Install dependencies
 RUN npm install mysql && npm install sqlite3 && npm install --unsafe-perm --production
